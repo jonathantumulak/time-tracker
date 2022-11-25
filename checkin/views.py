@@ -12,12 +12,16 @@ from django.views.generic import (
     TemplateView,
 )
 
+from checkin.forms import CheckInForm
+
 
 class BaseViewMixin:
+    """Base view mixin to add page title into context"""
+
     page_title = "Check-In"
 
-    def get_context_data(self):
-        ctx = super().get_context_data()
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
         ctx.update(
             {
                 "page_title": self.page_title,
@@ -48,13 +52,26 @@ class RegisterView(BaseViewMixin, CreateView):
     page_title = "Check-In | Register"
 
     def get_success_url(self):
-        return reverse("checkin:home")
+        return reverse("checkin:HomeView")
 
 
-class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, TemplateView):
+class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, FormView):
     # form_class = UserCreationForm
     template_name = "checkin/home.html"
     page_title = "Check-In App"
+    form_class = CheckInForm
+
+    def get_success_url(self):
+        return reverse("checkin:CheckinHomeView")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return super().form_valid(form)
 
 
 class ListCheckinView(BaseViewMixin, LoginRequiredMixin, TemplateView):
