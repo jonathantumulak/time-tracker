@@ -4,3 +4,4 @@ pre-commit==2.20.0  # https://github.com/pre-commit/pre-commit
 flake8==6.0.0  # https://github.com/PyCQA/flake8
 black==22.10.0  # https://github.com/psf/black
 isort==5.10.1  # https://github.com/timothycrosley/isort
+django-crispy-forms==1.14.0  # https://github.com/django-crispy-forms/django-crispy-forms
