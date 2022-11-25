@@ -1,0 +1,6 @@
+Django==3.2.16 # https://www.djangoproject.com/
+psycopg2==2.9.5  # https://github.com/psycopg/psycopg2
+pre-commit==2.20.0  # https://github.com/pre-commit/pre-commit
+flake8==6.0.0  # https://github.com/PyCQA/flake8
+black==22.10.0  # https://github.com/psf/black
+isort==5.10.1  # https://github.com/timothycrosley/isort
