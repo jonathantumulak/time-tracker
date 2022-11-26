@@ -11,7 +11,7 @@ class CheckInAdmin(admin.ModelAdmin):
         "activity",
         "tag",
         "hours",
-        "date",
+        "timestamp",
     )
     list_filter = ("tag",)
     search_fields = (

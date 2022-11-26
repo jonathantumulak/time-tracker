@@ -24,7 +24,7 @@ class CheckIn(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     hours = models.DecimalField("Hours", default=0, max_digits=3, decimal_places=2)
-    date = models.DateField("Date")
+    timestamp = models.DateTimeField("Timestamp")
     tag = models.ForeignKey(
         Tag,
         related_name="checkins",
@@ -36,3 +36,8 @@ class CheckIn(TimeStampedModel):
 
     def __str__(self):
         return f"#{self.tag} | {self.activity}"
+
+    @property
+    def get_check_in_display(self):
+        hour_string = "hr" if self.hours == 1 else "hrs"
+        return f"{self.hours.normalize()} {hour_string} #{self.tag.name} {self.activity}"

@@ -1,9 +1,12 @@
 import re
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import models
 from django.utils import timezone
+from django.utils.html import escape
 
 from checkin.models import (
     CheckIn,
@@ -12,7 +15,11 @@ from checkin.models import (
 
 
 class CheckInForm(models.ModelForm):
-    checkin_string = forms.CharField(label="Check-In")
+    """Form to create new check-ins"""
+
+    checkin_string = forms.CharField(
+        help_text=escape("Use the following format: <number> [hr | hrs] #<tag> <activities>")
+    )
 
     class Meta:
         model = CheckIn
@@ -21,6 +28,9 @@ class CheckInForm(models.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_show_labels = False
+        self.helper.add_input(Submit("submit", "Submit"))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -43,7 +53,7 @@ class CheckInForm(models.ModelForm):
     def save(self, commit=True):
         tag, _ = Tag.objects.get_or_create(name=self.cleaned_data["tag"])
         self.instance.user = self.user
-        self.instance.date = timezone.now().date()
+        self.instance.timestamp = timezone.now()
         self.instance.activity = self.cleaned_data["activity"]
         self.instance.hours = self.cleaned_data["hours"]
         self.instance.tag = tag

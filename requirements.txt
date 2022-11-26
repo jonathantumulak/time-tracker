@@ -6,3 +6,5 @@ black==22.10.0  # https://github.com/psf/black
 isort==5.10.1  # https://github.com/timothycrosley/isort
 django-crispy-forms==1.14.0  # https://github.com/django-crispy-forms/django-crispy-forms
 django-extensions==3.2.1  # https://github.com/django-extensions/django-extensions
+django-tables2==2.4.1  # https://github.com/jieter/django-tables2
+django-filter==22.1  # https://github.com/carltongibson/django-filter

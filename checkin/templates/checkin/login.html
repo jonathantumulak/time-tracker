@@ -1,17 +1,15 @@
 {% extends "checkin/base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
-
-  {% load crispy_forms_tags %}
-
-  <div class="container py-5">
+<div class="container py-5">
     <h1>Login</h1>
     <form method="POST">
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button class="btn btn-primary" type="submit">Login</button>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button class="btn btn-primary" type="submit">Login</button>
     </form>
     <p class="text-center">Don't have an account? <a href="{% url "checkin:RegisterView" %}">Create an account</a>.</p>
-  </div>
-
+</div>
 {% endblock %}

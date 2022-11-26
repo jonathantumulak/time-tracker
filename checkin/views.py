@@ -1,18 +1,26 @@
-from django.contrib.auth.forms import (
-    AuthenticationForm,
-    UserCreationForm,
-)
+import datetime
+
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from django.db.models import Sum
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import (
     CreateView,
     FormView,
-    TemplateView,
 )
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
 
+from checkin.filters import CheckInFilter
 from checkin.forms import CheckInForm
+from checkin.models import CheckIn
+from checkin.tables import (
+    MyCheckInTable,
+    TodayCheckInTable,
+)
 
 
 class BaseViewMixin:
@@ -31,8 +39,9 @@ class BaseViewMixin:
         return ctx
 
 
-class HomeView(BaseViewMixin, FormView):
-    form_class = AuthenticationForm
+class HomeView(BaseViewMixin, LoginView):
+    """Homepage that serves as login page."""
+
     template_name = "checkin/login.html"
     page_title = "Check-In | Login"
 
@@ -46,6 +55,8 @@ class HomeView(BaseViewMixin, FormView):
 
 
 class RegisterView(BaseViewMixin, CreateView):
+    """View for registering new users."""
+
     model = User
     form_class = UserCreationForm
     template_name = "checkin/register.html"
@@ -55,11 +66,23 @@ class RegisterView(BaseViewMixin, CreateView):
         return reverse("checkin:HomeView")
 
 
-class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, FormView):
-    # form_class = UserCreationForm
+class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FormView):
+    """Homepage for logged-in users."""
+
     template_name = "checkin/home.html"
     page_title = "Check-In App"
     form_class = CheckInForm
+    table_class = TodayCheckInTable
+
+    @property
+    def queryset(self):
+        return CheckIn.objects.filter(
+            user=self.request.user,
+            timestamp__date=datetime.date.today(),
+        )
+
+    def get_queryset(self):
+        return self.queryset
 
     def get_success_url(self):
         return reverse("checkin:CheckinHomeView")
@@ -73,8 +96,28 @@ class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, FormView):
         self.object = form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx.update(
+            {
+                "total_today": self.queryset.aggregate(total_today=Sum("hours"))["total_today"] or 0,
+            }
+        )
 
-class ListCheckinView(BaseViewMixin, LoginRequiredMixin, TemplateView):
-    # form_class = UserCreationForm
-    template_name = "checkin/checkins.html"
-    page_title = "Check-Ins | View"
+        return ctx
+
+
+class MyCheckinView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FilterView):
+    """View to list all of logged in user's check-ins"""
+
+    template_name = "checkin/my_checkins.html"
+    page_title = "My Check-Ins"
+    table_class = MyCheckInTable
+    model = CheckIn
+    filterset_class = CheckInFilter
+
+    @property
+    def queryset(self):
+        return CheckIn.objects.filter(
+            user=self.request.user,
+        )
