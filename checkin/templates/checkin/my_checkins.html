@@ -1,0 +1,32 @@
+{% extends "checkin/base.html" %}
+
+{% load django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block extra_style %}
+    <style>
+        #div_id_timestamp > div {
+            display: flex;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% if filter %}
+        <div class="container py-5">
+            {% crispy filter.form %}
+        </div>
+    {% endif %}
+    <div class="container py-5">
+        <h3>My check-ins</h3>
+        {% render_table table %}
+    </div>
+
+    <script>
+        $(function() {
+            $(".datepicker").datepicker();
+        });
+    </script>
+
+{% endblock %}

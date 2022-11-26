@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # 3rd party
     "crispy_forms",
     "django_extensions",
+    "django_tables2",
+    "django_filters",
     # local apps
     "checkin.apps.CheckinConfig",
 ]
@@ -69,6 +71,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -116,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Manila"
 
 USE_I18N = True
 
@@ -139,3 +142,5 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGIN_URL = "/"
 LOGOUT_URL = "/logout/"
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
