@@ -1,0 +1,16 @@
+{% extends "checkin/base_list.html" %}
+
+{% block extra_style %}
+    <style>
+        #div_id_checkin_timestamp > div {
+            display: flex;
+        }
+        #div_id_hours_logged > div {
+            display: flex;
+        }
+    </style>
+{% endblock %}
+
+{% block page_header %}
+    <h3>All users</h3>
+{% endblock %}

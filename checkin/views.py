@@ -1,7 +1,10 @@
 import datetime
 
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.db.models import Sum
@@ -16,12 +19,15 @@ from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
 from checkin.filters import (
+    AdminUserFilter,
     CheckInFilter,
-    CheckInReportsForm,
+    CheckInReportsFilter,
 )
 from checkin.forms import CheckInForm
 from checkin.models import CheckIn
 from checkin.tables import (
+    AdminCheckInTable,
+    AdminUserTable,
     MyCheckInTable,
     TodayCheckInTable,
 )
@@ -41,6 +47,13 @@ class BaseViewMixin:
         )
 
         return ctx
+
+
+class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """View mixin for allowing a logged in superuser access."""
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class HomeView(BaseViewMixin, LoginView):
@@ -83,7 +96,7 @@ class CheckinHomeView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FormV
         return CheckIn.objects.filter(
             user=self.request.user,
             timestamp__date=datetime.date.today(),
-        )
+        ).select_related("tag")
 
     def get_queryset(self):
         return self.queryset
@@ -124,7 +137,7 @@ class MyCheckinView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FilterV
     def queryset(self):
         return CheckIn.objects.filter(
             user=self.request.user,
-        )
+        ).select_related("tag")
 
 
 class MyReportsView(BaseViewMixin, LoginRequiredMixin, FilterView):
@@ -132,7 +145,8 @@ class MyReportsView(BaseViewMixin, LoginRequiredMixin, FilterView):
 
     template_name = "checkin/my_reports.html"
     model = CheckIn
-    filterset_class = CheckInReportsForm
+    filterset_class = CheckInReportsFilter
+    page_title = "Check-In | Reports"
 
     @property
     def queryset(self):
@@ -177,3 +191,34 @@ class DeleteCheckinView(BaseViewMixin, LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse("checkin:MyCheckinView")
+
+
+class CheckInListAdminView(BaseViewMixin, SuperUserRequiredMixin, SingleTableMixin, FilterView):
+    """Admin view for listing all check-ins"""
+
+    template_name = "checkin/admin_checkins.html"
+    page_title = "All Check-Ins"
+    table_class = AdminCheckInTable
+    model = CheckIn
+    filterset_class = CheckInFilter
+
+    @property
+    def queryset(self):
+        return CheckIn.objects.all().select_related("tag")
+
+
+class UserListAdminView(BaseViewMixin, SuperUserRequiredMixin, SingleTableMixin, FilterView):
+    """Admin view for listing all check-ins"""
+
+    template_name = "checkin/admin_users.html"
+    page_title = "All Users"
+    table_class = AdminUserTable
+    model = User
+    filterset_class = AdminUserFilter
+
+    @property
+    def queryset(self):
+        return User.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.annotate(total_hours=Sum("checkins__hours"))
