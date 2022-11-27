@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 
@@ -41,3 +42,6 @@ class CheckIn(TimeStampedModel):
     def get_check_in_display(self):
         hour_string = "hr" if self.hours == 1 else "hrs"
         return f"{self.hours.normalize()} {hour_string} #{self.tag.name} {self.activity}"
+
+    def get_delete_url(self):
+        return reverse("checkin:DeleteCheckinView", args=(self.pk,))

@@ -10,4 +10,5 @@ urlpatterns = [
     path("register/", views.RegisterView.as_view(), name="RegisterView"),
     path("checkin/", views.CheckinHomeView.as_view(), name="CheckinHomeView"),
     path("checkin/my/", views.MyCheckinView.as_view(), name="MyCheckinView"),
+    path("checkin/delete/<int:pk>/", views.DeleteCheckinView.as_view(), name="DeleteCheckinView"),
 ]

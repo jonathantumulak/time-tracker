@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import (
     CreateView,
+    DeleteView,
     FormView,
 )
 from django_filters.views import FilterView
@@ -121,3 +122,17 @@ class MyCheckinView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FilterV
         return CheckIn.objects.filter(
             user=self.request.user,
         )
+
+
+class DeleteCheckinView(BaseViewMixin, LoginRequiredMixin, DeleteView):
+    template_name = "checkin/delete_checkin.html"
+
+    @property
+    def queryset(self):
+        queryset = CheckIn.objects.all()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+    def get_success_url(self):
+        return reverse("checkin:MyCheckinView")

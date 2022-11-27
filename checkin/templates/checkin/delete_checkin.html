@@ -1,0 +1,24 @@
+{% extends "checkin/base.html" %}
+
+
+{% block content %}
+
+    <div class="container py-5">
+        <ul class="list-group">
+            <li class="list-group-item">{{ object.get_check_in_display }}</li>
+        </ul>
+    </div>
+    <div class="container py-5">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <h5 class="card-title">Are you sure you want to delete this check-in?</h5>
+                    <input class="btn btn-primary" type="submit" value="Delete">
+                    <a class="btn btn-secondary" type="reset" value="Cancel" href="{% url "checkin:MyCheckinView" %}">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
