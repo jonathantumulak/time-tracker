@@ -8,6 +8,7 @@ from checkin.models import (
 
 class CheckInAdmin(admin.ModelAdmin):
     list_display = (
+        "user",
         "activity",
         "tag",
         "hours",
@@ -17,6 +18,7 @@ class CheckInAdmin(admin.ModelAdmin):
     search_fields = (
         "activity",
         "tag__name",
+        "user__username",
     )
     raw_id_fields = ("tag",)
 

@@ -15,7 +15,11 @@
 
     {% if filter %}
         <div class="container py-5">
-            {% crispy filter.form %}
+            <div class="card">
+                <div class="card-body">
+                    {% crispy filter.form %}
+                </div>
+            </div>
         </div>
     {% endif %}
     <div class="container py-5">

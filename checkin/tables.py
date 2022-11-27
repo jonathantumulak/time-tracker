@@ -25,6 +25,11 @@ class MyCheckInTable(tables.Table):
     tag = tables.Column()
     activity = tables.Column()
     timestamp = tables.DateColumn(verbose_name="Date")
+    delete = tables.TemplateColumn(
+        verbose_name="Action",
+        template_name="checkin/delete_checkin_button.html",
+        orderable=False,
+    )
 
     class Meta:
         model = CheckIn
