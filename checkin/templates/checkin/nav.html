@@ -11,6 +11,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url "checkin:MyReportsView" %}">Reports</a>
             </li>
+            {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "checkin:CheckInListAdminView" %}">All check-ins</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "checkin:UserListAdminView" %}">All users</a>
+                </li>
+            {% endif %}
         </ul>
         {% if request.user.is_authenticated %}
             <div>

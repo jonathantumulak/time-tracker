@@ -1,0 +1,38 @@
+{% extends "checkin/base.html" %}
+
+{% load django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block extra_style %}
+    <style>
+        #div_id_timestamp > div {
+            display: flex;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% if filter %}
+        <div class="container py-5">
+            <div class="card">
+                <div class="card-body">
+                    {% crispy filter.form %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="container py-5">
+        {% block page_header %}
+            <h3>Check-ins</h3>
+        {% endblock %}
+        {% render_table table %}
+    </div>
+
+    <script>
+        $(function() {
+            $(".datepicker").datepicker();
+        });
+    </script>
+
+{% endblock %}
