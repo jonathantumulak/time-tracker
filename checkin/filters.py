@@ -44,8 +44,8 @@ class CheckInFilter(django_filters.FilterSet):
     activity = django_filters.CharFilter(label="Activity", lookup_expr="icontains")
 
     class Meta:
-        model = Tag
-        fields = ["tag", "timestamp"]
+        model = CheckIn
+        fields = ("tag", "timestamp", "activity")
 
     @property
     def form(self):
@@ -53,6 +53,30 @@ class CheckInFilter(django_filters.FilterSet):
         form.helper = FormHelper(form)
         form.helper.form_method = "GET"
         form.helper.layout = Layout(
+            Field("activity", placeholder="Activity"),
+            Field("tag", placeholder="Tag"),
+            Field("timestamp", placeholder="MM/DD/YYYY", css_class="datepicker d-inline-block"),
+            Submit("submit", "Filter"),
+        )
+        return form
+
+
+class CheckInAdminFilter(CheckInFilter):
+    user = django_filters.CharFilter(
+        label="Username",
+        field_name="user__username",
+    )
+
+    class Meta(CheckInFilter.Meta):
+        fields = ("user",) + CheckInFilter.Meta.fields
+
+    @property
+    def form(self):
+        form = super().form
+        form.helper = FormHelper(form)
+        form.helper.form_method = "GET"
+        form.helper.layout = Layout(
+            Field("user"),
             Field("activity", placeholder="Activity"),
             Field("tag", placeholder="Tag"),
             Field("timestamp", placeholder="MM/DD/YYYY", css_class="datepicker d-inline-block"),
@@ -84,8 +108,8 @@ class CheckInReportsFilter(django_filters.FilterSet):
     )
 
     class Meta:
-        model = Tag
-        fields = ["timestamp"]
+        model = CheckIn
+        fields = ["timestamp", "grouping"]
 
     @property
     def form(self):

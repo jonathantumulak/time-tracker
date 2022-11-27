@@ -20,6 +20,7 @@ from django_tables2 import SingleTableMixin
 
 from checkin.filters import (
     AdminUserFilter,
+    CheckInAdminFilter,
     CheckInFilter,
     CheckInReportsFilter,
 )
@@ -200,7 +201,7 @@ class CheckInListAdminView(BaseViewMixin, SuperUserRequiredMixin, SingleTableMix
     page_title = "All Check-Ins"
     table_class = AdminCheckInTable
     model = CheckIn
-    filterset_class = CheckInFilter
+    filterset_class = CheckInAdminFilter
 
     @property
     def queryset(self):
