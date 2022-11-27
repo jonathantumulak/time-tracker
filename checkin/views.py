@@ -19,10 +19,10 @@ from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
 from checkin.filters import (
-    AdminUserFilter,
     CheckInAdminFilter,
     CheckInFilter,
     CheckInReportsFilter,
+    UserAdminFilter,
 )
 from checkin.forms import CheckInForm
 from checkin.models import CheckIn
@@ -215,7 +215,7 @@ class UserListAdminView(BaseViewMixin, SuperUserRequiredMixin, SingleTableMixin,
     page_title = "All Users"
     table_class = AdminUserTable
     model = User
-    filterset_class = AdminUserFilter
+    filterset_class = UserAdminFilter
 
     @property
     def queryset(self):
