@@ -24,7 +24,7 @@ class CheckIn(TimeStampedModel):
         related_name="checkins",
         on_delete=models.CASCADE,
     )
-    hours = models.DecimalField("Hours", default=0, max_digits=3, decimal_places=2)
+    hours = models.DecimalField("Hours", default=0, max_digits=8, decimal_places=2)
     timestamp = models.DateTimeField("Timestamp")
     tag = models.ForeignKey(
         Tag,
