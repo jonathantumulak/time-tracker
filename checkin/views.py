@@ -15,7 +15,10 @@ from django.views.generic import (
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
-from checkin.filters import CheckInFilter
+from checkin.filters import (
+    CheckInFilter,
+    CheckInReportsForm,
+)
 from checkin.forms import CheckInForm
 from checkin.models import CheckIn
 from checkin.tables import (
@@ -122,6 +125,44 @@ class MyCheckinView(BaseViewMixin, LoginRequiredMixin, SingleTableMixin, FilterV
         return CheckIn.objects.filter(
             user=self.request.user,
         )
+
+
+class MyReportsView(BaseViewMixin, LoginRequiredMixin, FilterView):
+    """View to show basic reports for a users check-ins."""
+
+    template_name = "checkin/my_reports.html"
+    model = CheckIn
+    filterset_class = CheckInReportsForm
+
+    @property
+    def queryset(self):
+        return CheckIn.objects.filter(
+            user=self.request.user,
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["has_grouping_query"] = "grouping" in self.request.GET
+        if ctx["has_grouping_query"]:
+            object_list = ctx["object_list"]
+            ctx["chart_data"] = self._build_chart_data(object_list)
+
+        return ctx
+
+    def _build_chart_data(self, object_list):
+        """Format object_list data to be accepted by chart.js."""
+        items = dict()
+        for record in object_list.all():
+            label = " - ".join([str(val) for key, val in record.items() if key != "total_hours"])
+            items.update(
+                {
+                    label: float(record["total_hours"].normalize()),
+                }
+            )
+        return {
+            "labels": [key for key in items.keys()],
+            "values": [value for value in items.values()],
+        }
 
 
 class DeleteCheckinView(BaseViewMixin, LoginRequiredMixin, DeleteView):
