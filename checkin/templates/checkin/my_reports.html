@@ -1,0 +1,65 @@
+{% extends "checkin/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block extra_style %}
+    <style>
+        #div_id_timestamp > div {
+            display: flex;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container py-5">
+        <div class="card">
+            <div class="card-body">
+                {% crispy filter.form %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        {% if has_grouping_query %}
+            <canvas id="reports-chart"></canvas>
+            {{ chart_data|json_script:"chart-data" }}
+        {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <h5>Select a grouping filter above to show the chart.</h5>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+
+
+    <script>
+
+        $(function() {
+            $(".datepicker").datepicker();
+        });
+
+        {% if has_grouping_query %}
+            const chart = document.getElementById('reports-chart');
+
+            const chart_data = JSON.parse(document.getElementById('chart-data').textContent);
+            const labels = chart_data["labels"];
+            const values = chart_data["values"];
+
+            new Chart(chart, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total hours',
+                        data: values,
+                        hoverOffset: 4
+                    }]
+                },
+              });
+        {% endif %}
+    </script>
+
+{% endblock %}
