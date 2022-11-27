@@ -15,6 +15,7 @@ from django.db.models import (
     Subquery,
     Sum,
 )
+from django.db.models.functions import Coalesce
 
 from checkin.models import (
     CheckIn,
@@ -145,23 +146,24 @@ class UserCheckInDateRangeFilter(django_filters.DateFromToRangeFilter):
 
         # filter checkins for user on date range and annotate total hours
         # to user query
-        user_checkins_for_date_range = (
+        user_checkins_for_date_range = Subquery(
             CheckIn.objects.filter(user=OuterRef("id"), **{lookup: value})
             .order_by()
             .values("user")
             .annotate(total_hours=Sum("hours"))
-            .values("total_hours")
+            .values("total_hours"),
+            output_field=DecimalField(),
         )
-        return qs.annotate(total_hours=Subquery(user_checkins_for_date_range, output_field=DecimalField()))
+        return qs.annotate(total_hours=Coalesce(user_checkins_for_date_range, 0, output_field=DecimalField()))
 
 
-class AdminUserFilter(django_filters.FilterSet):
+class UserAdminFilter(django_filters.FilterSet):
     """Filters for user list view for admins"""
 
     username = django_filters.CharFilter(label="Username", lookup_expr="icontains")
     checkin_timestamp = UserCheckInDateRangeFilter(label="Checkin date range", field_name="timestamp")
     hours_logged = django_filters.RangeFilter(
-        label="Hours logged",
+        label="Hours logged range",
         field_name="total_hours",
     )
 
