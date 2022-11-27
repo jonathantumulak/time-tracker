@@ -52,6 +52,7 @@ class CheckInFilter(django_filters.FilterSet):
     def form(self):
         form = super().form
         form.helper = FormHelper(form)
+        form.helper.form_id = "filter-form"
         form.helper.form_method = "GET"
         form.helper.layout = Layout(
             Field("activity", placeholder="Activity"),
@@ -75,6 +76,7 @@ class CheckInAdminFilter(CheckInFilter):
     def form(self):
         form = super().form
         form.helper = FormHelper(form)
+        form.helper.form_id = "filter-form"
         form.helper.form_method = "GET"
         form.helper.layout = Layout(
             Field("user"),
@@ -116,6 +118,7 @@ class CheckInReportsFilter(django_filters.FilterSet):
     def form(self):
         form = super().form
         form.helper = FormHelper(form)
+        form.helper.form_id = "filter-form"
         form.helper.form_method = "GET"
         form.helper.layout = Layout(
             Field("timestamp", placeholder="MM/DD/YYYY", css_class="datepicker d-inline-block"),
@@ -175,6 +178,7 @@ class UserAdminFilter(django_filters.FilterSet):
     def form(self):
         form = super().form
         form.helper = FormHelper(form)
+        form.helper.form_id = "filter-form"
         form.helper.form_method = "GET"
         form.helper.layout = Layout(
             Field("username"),

@@ -12,3 +12,7 @@ gunicorn==20.1.0  # https://github.com/benoitc/gunicorn
 django-environ==0.9.0  # https://github.com/joke2k/django-environ
 dj_database_url==1.0.0  # https://github.com/jazzband/dj-database-url
 whitenoise==6.2.0  # https://github.com/evansd/whitenoise
+
+factory-boy==3.2.1  # https://github.com/FactoryBoy/factory_boy
+django-webtest==1.9.10  # https://github.com/django-webtest/django-webtest
+parameterized==0.8.1  # https://github.com/wolever/parameterized
