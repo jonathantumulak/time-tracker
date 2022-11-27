@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -55,6 +56,6 @@ class CheckInForm(models.ModelForm):
         self.instance.user = self.user
         self.instance.timestamp = timezone.now()
         self.instance.activity = self.cleaned_data["activity"]
-        self.instance.hours = self.cleaned_data["hours"]
+        self.instance.hours = Decimal(self.cleaned_data["hours"])
         self.instance.tag = tag
         return super().save(commit)
