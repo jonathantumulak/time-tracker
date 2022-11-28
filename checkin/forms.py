@@ -30,6 +30,7 @@ class CheckInForm(models.ModelForm):
         self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
+        self.helper.form_id = "checkin-form"
         self.helper.form_show_labels = False
         self.helper.add_input(Submit("submit", "Submit"))
 
