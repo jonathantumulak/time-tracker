@@ -11,3 +11,4 @@ django-filter==22.1  # https://github.com/carltongibson/django-filter
 gunicorn==20.1.0  # https://github.com/benoitc/gunicorn
 django-environ==0.9.0  # https://github.com/joke2k/django-environ
 dj_database_url==1.0.0  # https://github.com/jazzband/dj-database-url
+whitenoise==6.2.0  # https://github.com/evansd/whitenoise
