@@ -1,4 +1,5 @@
 import datetime
+from collections import OrderedDict
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import (
@@ -166,7 +167,7 @@ class MyReportsView(BaseViewMixin, LoginRequiredMixin, FilterView):
 
     def _build_chart_data(self, object_list):
         """Format object_list data to be accepted by chart.js."""
-        items = dict()
+        items = OrderedDict()
         for record in object_list.all():
             label = " - ".join([str(val) for key, val in record.items() if key != "total_hours"])
             items.update(
