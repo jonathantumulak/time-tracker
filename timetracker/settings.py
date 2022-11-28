@@ -48,12 +48,14 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_tables2",
     "django_filters",
+    "whitenoise.runserver_nostatic",
     # local apps
     "checkin.apps.CheckinConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -151,6 +153,8 @@ DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
 
 
 env = env.str("ENV", "dev")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 if env == "prod":
     from .prod_settings import *
