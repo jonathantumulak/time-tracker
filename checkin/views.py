@@ -192,7 +192,10 @@ class DeleteCheckinView(BaseViewMixin, LoginRequiredMixin, DeleteView):
         return queryset
 
     def get_success_url(self):
-        return reverse("checkin:MyCheckinView")
+        if self.request.user.is_superuser:
+            return reverse("checkin:CheckInListAdminView")
+        else:
+            return reverse("checkin:MyCheckinView")
 
 
 class CheckInListAdminView(BaseViewMixin, SuperUserRequiredMixin, SingleTableMixin, FilterView):
